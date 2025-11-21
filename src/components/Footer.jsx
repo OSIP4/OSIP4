@@ -1,123 +1,99 @@
-import { Github, Twitter, Linkedin, Mail } from "lucide-react";
-
-const footerLinks = {
-  Product: ["Features", "Pricing", "Security", "Roadmap", "Changelog"],
-  Company: ["About", "Blog", "Careers", "Press", "Partners"],
-  Resources: [
-    "Documentation",
-    "Help Center",
-    "Community",
-    "API Reference",
-    "Status",
-  ],
-  Legal: ["Privacy", "Terms", "Cookie Policy", "Licenses", "Compliance"],
-};
+import { Github, Twitter, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-800 bg-slate-950/50 backdrop-blur-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-        {/* Main footer content - hidden on mobile, visible on sm and up */}
-        <div className="hidden sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-6 sm:gap-8 lg:gap-12 mb-8 sm:mb-12">
-          <div className="col-span-1 sm:col-span-3 lg:col-span-2 text-center sm:text-left">
-            <div className="flex items-center justify-center sm:justify-start space-x-2 mb-3 sm:mb-4">
-              <div className="rounded-lg">
-                <img
-                  src="/logo.png"
-                  alt="CodeFlow Logo"
-                  className="w-6 h-6 sm:w-8 sm:h-8"
-                />
-              </div>
-              <span className="text-lg sm:text-xl font-bold">
-                <span className="text-white">Code</span>
-                <span className="text-blue-400">Flow</span>
+    <footer className="relative bg-slate-950/80 backdrop-blur-sm border-t border-slate-800 py-8 sm:py-10 px-4 sm:px-6 lg:px-8">
+      {/* Garis biru tipis di atas */}
+      <div className="absolute top-0 left-0 right-0 h-0.5 bg-blue-500" />
+
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
+        {/* Kolom 1: Logo & Deskripsi */}
+        <div className="text-center lg:text-left">
+          <div className="flex items-center justify-center lg:justify-start space-x-3 mb-4">
+            <img
+              src="logo.png"
+              alt="Logo OSIP4"
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <span className="text-xl font-bold text-white">OSIP4</span>
+          </div>
+          <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
+            OSIP4 merupakan wadah pengembangan diri bagi seluruh siswa SMKN 4
+            Padalarang untuk membangun komunitas yang kreatif, inovatif, dan
+            berintegritas melalui berbagai kegiatan organisasi intrasekolah.
+          </p>
+        </div>
+
+        {/* Kolom 2: Kontak & Lokasi */}
+        <div className="text-center lg:text-left">
+          <h3 className="text-lg font-semibold text-white mb-4">Kontak Kami</h3>
+          <div className="space-y-3 text-gray-400 text-sm">
+            <div className="flex items-center justify-center lg:justify-start space-x-2">
+              <MapPin className="w-4 h-4 text-blue-400" />
+              <span>
+                Kertajaya, Kec. Padalarang, Kabupaten Bandung Barat, Jawa Barat
+                40553
               </span>
             </div>
-            <p className="text-gray-400 mb-4 sm:mb-6 max-w-xs mx-auto sm:mx-0 text-sm sm:text-base">
-              Transform your workflow with AI-powered tools and automation.
-              Built for modern teams.
-            </p>
-            <div className="flex justify-center sm:justify-start space-x-3 sm:space-x-4">
-              <a
-                href="#"
-                className="p-2 sm:p-2.5 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors duration-200"
-              >
-                <Twitter className="w-5 h-5 sm:w-5 sm:h-5" />
-              </a>
-              <a
-                href="#"
-                className="p-2 sm:p-2.5 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors duration-200"
-              >
-                <Github className="w-5 h-5 sm:w-5 sm:h-5" />
-              </a>
-              <a
-                href="#"
-                className="p-2 sm:p-2.5 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors duration-200"
-              >
-                <Linkedin className="w-5 h-5 sm:w-5 sm:h-5" />
-              </a>
-              <a
-                href="#"
-                className="p-2 sm:p-2.5 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors duration-200"
-              >
-                <Mail className="w-5 h-5 sm:w-5 sm:h-5" />
-              </a>
+            <div className="flex items-center justify-center lg:justify-start space-x-2">
+              <Mail className="w-4 h-4 text-blue-400" />
+              <span>rezafairusnugraha@gmail.com</span>
+            </div>
+            <div className="flex items-center justify-center lg:justify-start space-x-2">
+              <Phone className="w-4 h-4 text-blue-400" />
+              <span>+62 858-6324-4821</span>
             </div>
           </div>
 
-          {/* Footer links - visible on sm and up */}
-          <div className="sm:col-span-3 lg:col-span-4">
-            <div className="grid grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
-              {Object.entries(footerLinks).map(([category, links]) => (
-                <div key={category}>
-                  <h3 className="font-semibold text-white mb-3 sm:mb-4 text-sm sm:text-base">
-                    {category}
-                  </h3>
-                  <ul className="space-y-2 sm:space-y-3">
-                    {links.map((link) => (
-                      <li key={link}>
-                        <a
-                          href="#"
-                          className="text-gray-400 hover:text-white transition-colors duration-200 text-xs sm:text-sm"
-                        >
-                          {link}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+          {/* Peta Embed Gratis */}
+          <div className="mt-6 bg-slate-900/50 rounded-lg overflow-hidden">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3197.9637057265168!2d107.48996057388604!3d-6.848750243149513!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e354123cec23%3A0x8dddecf0bcf180f1!2sSMKN%204%20Padalarang%2C%20Kertajaya%2C%20Kec.%20Padalarang%2C%20Kabupaten%20Bandung%20Barat%2C%20Jawa%20Barat%2040553!5e1!3m2!1sid!2sid!4v1763645893262!5m2!1sid!2sid"
+              width="100%"
+              height="140"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="rounded-lg"
+              title="Lokasi STT Nurul Fikri Kampus B"
+            ></iframe>
           </div>
         </div>
 
-        <div className="pt-6 sm:pt-8 border-t-0 sm:border-t border-slate-800">
-          <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
-            <p className="text-gray-400 text-xs sm:text-sm">
-              © 2025 CodeFlow. All rights reserved.
-            </p>
-            <div className="flex items-center space-x-4 sm:space-x-6 text-xs sm:text-sm">
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
-              >
-                Privacy Policy
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
-              >
-                Terms of Service
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors duration-200"
-              >
-                Cookie Settings
-              </a>
-            </div>
+        {/* Kolom 3: Sosial Media & Link Cepat */}
+        <div className="text-center lg:text-left">
+          <h3 className="text-lg font-semibold text-white mb-4">Ikuti Kami</h3>
+          <div className="flex justify-center lg:justify-start space-x-4 mb-6">
+            <a
+              href="#"
+              className="p-2 bg-slate-800 rounded-lg hover:bg-blue-600 transition-colors duration-200"
+              aria-label="Twitter"
+            >
+              <Twitter className="w-5 h-5 text-gray-400 hover:text-white" />
+            </a>
+            <a
+              href="#"
+              className="p-2 bg-slate-800 rounded-lg hover:bg-blue-600 transition-colors duration-200"
+              aria-label="GitHub"
+            >
+              <Github className="w-5 h-5 text-gray-400 hover:text-white" />
+            </a>
+            <a
+              href="#"
+              className="p-2 bg-slate-800 rounded-lg hover:bg-blue-600 transition-colors duration-200"
+              aria-label="LinkedIn"
+            >
+              <Linkedin className="w-5 h-5 text-gray-400 hover:text-white" />
+            </a>
           </div>
         </div>
+      </div>
+
+      {/* Copyright */}
+      <div className="mt-10 pt-6 border-t border-slate-800 text-center text-gray-500 text-sm">
+        © 2025 OSIP4. Dibuat dengan semangat oleh mahasiswa PPLG Dan Gamelab
+        (Orace Academy)
       </div>
     </footer>
   );

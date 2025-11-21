@@ -23,8 +23,8 @@ export default function Navbar({ scrolled }) {
               />
             </div>
             <span className="text-lg sm:text-xl md:text-2xl font-medium">
-              <span className="text-white">Code</span>
-              <span className="text-blue-400">Flow</span>
+              <span className="text-white">OSIP</span>
+              <span className="text-blue-400">4</span>
             </span>
           </div>
 
@@ -34,19 +34,19 @@ export default function Navbar({ scrolled }) {
               href="#features"
               className="text-gray-300 hover:text-white text-sm lg:text-base"
             >
-              Features
+              Berita
             </a>
             <a
               href="#pricing"
               className="text-gray-300 hover:text-white text-sm lg:text-base"
             >
-              Pricing
+              Perasa
             </a>
             <a
               href="#testimonials"
               className="text-gray-300 hover:text-white text-sm lg:text-base"
             >
-              Testimonials
+              Tentang Kami
             </a>
           </div>
 

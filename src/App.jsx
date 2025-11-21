@@ -1,10 +1,11 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Features from "./components/Features";
-import Pricing from "./components/Pricing";
-import Testimonials from "./components/Testimonials";
+import Features from "./components/Kabinet";
+import Pricing from "./components/BadanPengurusInti";
+import Testimonials from "./components/Perasa";
 import Footer from "./components/Footer";
 import { useEffect, useState } from "react";
+import AppBackground from "./utils/AppBackground";
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -23,8 +24,10 @@ function App() {
       <Navbar scrolled={scrolled} />
       <Hero />
       <Features />
-      <Pricing />
-      <Testimonials />
+      <AppBackground>
+        <Pricing />
+        <Testimonials />
+      </AppBackground>
       <Footer />
     </div>
   );
