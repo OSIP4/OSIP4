@@ -1,6 +1,6 @@
 # OSIP4 — React + Vite
 
-Template ini menyediakan setup minimal untuk membangun aplikasi React menggunakan Vite dengan dukungan HMR (Hot Module Replacement) dan konfigurasi ESLint dasar. Template ini telah disesuaikan untuk kebutuhan proyek **OSIP4**.
+README ini dibuat untuk menjelaskan proyek website **OSIP4** yang dikembangkan khusus untuk keperluan lomba pembuatan website dengan tema organisasi sekolah. Proyek ini menggunakan React dan Vite sebagai fondasi utama untuk membangun website OSIP4 yang modern, cepat, dan mudah dikembangkan.**.
 
 ## 🚀 Fitur Utama
 
@@ -30,3 +30,5 @@ Jika Anda ingin menggunakan TypeScript, Anda dapat melihat template React + Type
 Proyek ini dibuat sebagai bagian dari pengembangan sistem informasi dan aplikasi pendukung untuk **OSIP4 (Organisasi Siswa Intrasekolah SMKN 4 Padalarang)**. Dengan fondasi React + Vite, proyek OSIP4 dapat dikembangkan dengan cepat, modern, dan scalable.
 
 ---
+
+Silakan sesuaikan README ini sesuai kebutuhan pengembangan proyek OSIP4 Anda.
