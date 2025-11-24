@@ -17,7 +17,7 @@ export default function Navbar({ scrolled, user, setUser }) {
     { name: "Home", to: "/" },
     { name: "Berita", to: "/berita" },
     { name: "Jadwal Apel", to: "/jadwal-apel" },
-    { name: "Tentang Kami", to: "#tentang" }, // tetap sebagai anchor jika perlu
+    { name: "Tentang Kami", to: "/tentang-kami" },
   ];
 
   const NavLink = ({ item, isMobile = false }) => {

@@ -1,26 +1,16 @@
-// components/BeritaPage.jsx
-import { useState, useEffect } from "react";
+import { beritaDummy } from "../data/beritaDummy";
+import BeritaCard from "./BeritaCard";
 
 export default function BeritaPage() {
-  const [berita, setBerita] = useState([]);
-
-  useEffect(() => {
-    fetch("https://bayudian.pplgsmkn4.my.id/lomba_api/src/api/get_jadwal.php")
-      .then((res) => res.json())
-      .then((data) => setBerita(data));
-  }, []);
-
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">📰 Berita</h2>
-      <ul className="space-y-3">
-        {berita.map((item) => (
-          <li key={item.id} className="bg-gray-800 p-4 rounded">
-            <h3 className="font-semibold">{item.judul}</h3>
-            <p>{item.isi}</p>
-          </li>
+      <h2 className="text-3xl font-bold mb-6 text-white">📰 Berita Terbaru</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {beritaDummy.map((item) => (
+          <BeritaCard key={item.id} data={item} />
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

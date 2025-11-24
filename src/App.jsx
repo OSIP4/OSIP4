@@ -6,7 +6,8 @@ import Footer from "./components/Footer";
 import JadwalApelPage from "./pages/JadwalApelPage";
 import BeritaPage from "./pages/BeritaPage";
 import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
+import TentangKamiPage from "./pages/TentangKamiPage";
+import NotFound from "./pages/NotFound"
 import Admin from "./pages/Admin";
 
 function Layout({ children }) {
@@ -48,6 +49,7 @@ function AppContent() {
       <Route path="/admin" element={<Admin />} />
       <Route path="/jadwal-apel" element={<JadwalApelPage />} />
       <Route path="/berita" element={<BeritaPage />} />
+      <Route path="/tentang-kami" element={<TentangKamiPage />} />
     </Routes>
   );
 }
