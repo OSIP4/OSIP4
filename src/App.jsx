@@ -6,11 +6,9 @@ import Footer from "./components/Footer";
 import JadwalApelPage from "./pages/JadwalApelPage";
 import BeritaPage from "./pages/BeritaPage";
 import Home from "./pages/Home";
-<<<<<<< HEAD
 import TentangKamiPage from "./pages/TentangKamiPage";
-=======
-import NotFound from "./pages/NotFound";
->>>>>>> bb141a2fca425ccab9d27b1af2159f6f4a5c0822
+import NotFound from "./pages/NotFound"
+import Admin from "./pages/Admin";
 
 function Layout({ children }) {
   const [scrolled, setScrolled] = useState(false);
@@ -48,7 +46,7 @@ function AppContent() {
     <Routes>
       <Route path="*" element={<NotFound />} />
       <Route path="/" element={<Home />} />
-
+      <Route path="/admin" element={<Admin />} />
       <Route path="/jadwal-apel" element={<JadwalApelPage />} />
       <Route path="/berita" element={<BeritaPage />} />
       <Route path="/tentang-kami" element={<TentangKamiPage />} />
