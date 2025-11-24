@@ -1,8 +1,12 @@
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     function handleMouseMove(e) {
@@ -49,14 +53,21 @@ export default function Hero() {
 
         {/* Tombol Aksi */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-12">
-          <button className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 flex items-center justify-center space-x-2">
+          <button
+            onClick={() => navigate("/berita")}
+            className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 flex items-center justify-center space-x-2"
+          >
             <span>Lihat Berita Terbaru</span>
           </button>
 
-          <button className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 flex items-center justify-center space-x-2">
+          <button
+            onClick={() => navigate("/tentang-kami")}
+            className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full font-semibold text-sm sm:text-base transition-all duration-300 flex items-center justify-center space-x-2"
+          >
             <span>Kenalan dengan OSIP4</span>
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300" />
           </button>
+
         </div>
       </div>
     </section>
