@@ -11,13 +11,14 @@ export default function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!username || !password) return alert("Username dan Password wajib diisi");
+    if (!username || !password)
+      return alert("Username dan Password wajib diisi");
 
     setLoading(true);
 
     try {
       const response = await axios.post(
-        "https://bayudian.pplgsmkn4.my.id/lomba_api/src/api/login.php",
+        "https://kompetisi.pplgsmkn4.my.id/Kompetisi/api/login.php",
         { username, password }
       );
 
@@ -42,7 +43,9 @@ export default function LoginForm() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4">
       <div className="bg-slate-800 p-8 rounded-xl shadow-2xl w-full max-w-md">
-        <h2 className="text-white text-2xl font-bold text-center mb-6">Login</h2>
+        <h2 className="text-white text-2xl font-bold text-center mb-6">
+          Login
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <input

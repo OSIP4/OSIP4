@@ -7,10 +7,11 @@ import JadwalApelPage from "./pages/JadwalApelPage";
 import BeritaPage from "./pages/BeritaPage";
 import Home from "./pages/Home";
 import TentangKamiPage from "./pages/TentangKamiPage";
-import NotFound from "./pages/NotFound"
+import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
+import BeritaDetail from "./components/BeritaDetail";
 
-function Layout({ children }) {
+function Layout() {
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -20,6 +21,13 @@ function Layout({ children }) {
     if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
 
+  // Simpan ke localStorage saat user berubah
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+  }, [user]);
+
   // Scroll effect
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -27,28 +35,29 @@ function Layout({ children }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
-  };
-
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <Navbar user={user} setUser={setUser} scrolled={scrolled} />
-      <main className="pt-5 sm:pt-10 md:pt-15">{children}</main>
+      <main className="pt-5 sm:pt-10 md:pt-15">
+        <AppContent user={user} setUser={setUser} />
+      </main>
       <Footer />
     </div>
   );
 }
 
-function AppContent() {
+// ✅ Terima user dan setUser sebagai prop
+function AppContent({ user, setUser }) {
   return (
     <Routes>
       <Route path="*" element={<NotFound />} />
       <Route path="/" element={<Home />} />
       <Route path="/admin" element={<Admin />} />
-      <Route path="/jadwal-apel" element={<JadwalApelPage />} />
-      <Route path="/berita" element={<BeritaPage />} />
+      <Route path="/jadwal-apel" element={<JadwalApelPage user={user} />} />
+      {/* ✅ Kirim prop user ke BeritaPage */}
+      <Route path="/berita" element={<BeritaPage user={user} />} />
+      {/* ✅ Kirim prop user ke BeritaDetail (jika butuh) */}
+      <Route path="/berita/:id" element={<BeritaDetail user={user} />} />
       <Route path="/tentang-kami" element={<TentangKamiPage />} />
     </Routes>
   );
@@ -58,9 +67,7 @@ function AppContent() {
 export default function App() {
   return (
     <Router>
-      <Layout>
-        <AppContent />
-      </Layout>
+      <Layout />
     </Router>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
+import LoginForm from "./LoginForm"; // Pastikan path sesuai
 
 export default function Navbar({ scrolled, user, setUser }) {
   const [mobileMenuIsOpen, setMobileMenuIsOpen] = useState(false);
@@ -10,7 +11,8 @@ export default function Navbar({ scrolled, user, setUser }) {
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    navigate("/"); // opsional: kembali ke home setelah logout
+    setMobileMenuIsOpen(false); // tutup menu mobile saat logout
+    navigate("/");
   };
 
   const navItems = [
@@ -72,11 +74,32 @@ export default function Navbar({ scrolled, user, setUser }) {
               </span>
             </Link>
 
-            {/* Desktop Nav */}
+            {/* Desktop Nav + Login/User */}
             <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
               {navItems.map((item) => (
                 <NavLink key={item.to} item={item} />
               ))}
+
+              {/* Login / User Area */}
+              {user ? (
+                <div className="flex items-center space-x-3">
+                  <span className="text-sm text-gray-300">{user.username}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="text-sm text-red-400 hover:text-red-300"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowLogin(true)}
+                  className="text-sm text-gray-300 hover:text-white flex items-center space-x-1"
+                >
+                  <User className="w-4 h-4" />
+                  <span>Login</span>
+                </button>
+              )}
             </div>
 
             {/* Mobile toggle */}
@@ -100,6 +123,35 @@ export default function Navbar({ scrolled, user, setUser }) {
               {navItems.map((item) => (
                 <NavLink key={item.to} item={item} isMobile={true} />
               ))}
+
+              {/* Login / Logout di Mobile */}
+              <div className="pt-4 border-t border-slate-800">
+                {user ? (
+                  <div className="flex flex-col space-y-2">
+                    <span className="text-sm text-gray-400">
+                      Login sebagai:{" "}
+                      <span className="text-white">{user.username}</span>
+                    </span>
+                    <button
+                      onClick={handleLogout}
+                      className="text-sm text-red-400 hover:text-red-300 text-left py-1"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setShowLogin(true);
+                      setMobileMenuIsOpen(false);
+                    }}
+                    className="text-sm text-gray-300 hover:text-white flex items-center space-x-2 py-1"
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Login</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}

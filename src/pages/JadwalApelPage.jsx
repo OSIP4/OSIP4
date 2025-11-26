@@ -1,11 +1,9 @@
 import JadwalApel from "../components/JadwalApel";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 
-function JadwalApelPage() {
+function JadwalApelPage({ user }) {
   return (
     <>
-      <JadwalApel />
+      <JadwalApel user={user} />
     </>
   );
 }

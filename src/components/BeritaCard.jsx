@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 
-// Komponen Card (disederhanakan sesuai DB-mu)
-export default function BeritaCard({ data }) {
-  // Gunakan placeholder gambar
-  const placeholderImage = "https://via.placeholder.com/400x200/1e3a8a/FFFFFF?text=Berita+SMK";
+export default function BeritaCard({ data, onHapus }) {
+  const BASE_URL = "https://kompetisi.pplgsmkn4.my.id/";
 
-  // Ambil hanya tanggal (tanpa jam) — asumsi format: "2025-04-05 10:30:00"
+  const imageUrl = data.foto
+    ? `${BASE_URL}/${data.foto}`
+    : "https://via.placeholder.com/400x200/1e3a8a/FFFFFF?text=Berita+SMK";
+
   const tanggal = data.tanggal_post ? data.tanggal_post.split(" ")[0] : "—";
 
   return (
@@ -16,10 +17,14 @@ export default function BeritaCard({ data }) {
       </div>
 
       {/* Gambar */}
-      <img 
-        src={placeholderImage} 
+      <img
+        src={imageUrl}
+        onError={(e) => {
+          e.target.src =
+            "https://via.placeholder.com/400x200/1e3a8a/FFFFFF?text=Gagal+Load";
+        }}
         className="w-full h-48 object-cover"
-        alt={data.judul}
+        alt={data.judul || "Berita"}
       />
 
       {/* Isi Card */}
@@ -29,21 +34,31 @@ export default function BeritaCard({ data }) {
         </h2>
 
         <p className="text-gray-400 text-sm mb-3">
-          Dibuat oleh: {data.id_guru}
+          Dibuat oleh: {data.pembuat}
         </p>
 
-        <p className="text-gray-300 mb-6 line-clamp-3">
-          {data.isi}
-        </p>
+        <p className="text-gray-300 mb-6 line-clamp-3">{data.isi}</p>
 
-        <Link 
-          to={`/berita/${data.id}`}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg inline-block text-sm"
-        >
-          Lihat Detail →
-        </Link>
+        <div className="flex justify-between items-center">
+          <Link
+            to={`/berita/${data.id_berita || data.id}`}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg inline-block text-sm"
+          >
+            Lihat Detail →
+          </Link>
+
+          {/* Tombol Hapus (hanya muncul jika onHapus disediakan) */}
+          {onHapus && (
+            <button
+              onClick={onHapus}
+              className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm"
+              title="Hapus berita"
+            >
+              Hapus
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-
