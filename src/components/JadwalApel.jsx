@@ -8,35 +8,47 @@ export default function JadwalApel({ user }) {
   const [selectedJadwal, setSelectedJadwal] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  // Form state
-  const [newHari, setNewHari] = useState("");
   const [newTanggal, setNewTanggal] = useState("");
   const [newKelas, setNewKelas] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Gunakan HTTPS untuk hindari mixed content
   const API = "http://kompetisi.pplgsmkn4.my.id/Kompetisi/api/";
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("id-ID", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+  };
+
+  const isToday = (dateString) => {
+    const today = new Date();
+    const compare = new Date(dateString);
+    return (
+      today.getDate() === compare.getDate() &&
+      today.getMonth() === compare.getMonth() &&
+      today.getFullYear() === compare.getFullYear()
+    );
+  };
 
   const loadJadwal = async () => {
     setLoading(true);
     try {
       const res = await axios.get(`${API}get_apel.php`);
-      setJadwal(res.data);
+      const data = Array.isArray(res.data) ? res.data : [];
+      const sorted = data.sort(
+        (a, b) => new Date(a.Tanggal) - new Date(b.Tanggal)
+      );
+      setJadwal(sorted);
     } catch (err) {
-      console.error("Gagal memuat jadwal apel:", err);
+      console.error("Gagal memuat jadwal:", err);
+      setJadwal([]);
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const handleMouseMove = (e) =>
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
 
   useEffect(() => {
     loadJadwal();
@@ -47,8 +59,8 @@ export default function JadwalApel({ user }) {
     const term = searchTerm.toLowerCase();
     return jadwal.filter(
       (item) =>
-        item.Hari.toLowerCase().includes(term) ||
         item.Kelas.toLowerCase().includes(term) ||
+        formatDate(item.Tanggal).toLowerCase().includes(term) ||
         item.Tanggal.includes(term)
     );
   }, [jadwal, searchTerm]);
@@ -64,133 +76,146 @@ export default function JadwalApel({ user }) {
   };
 
   const deleteJadwal = async () => {
-    if (!selectedJadwal || !confirm("Yakin ingin menghapus jadwal ini?"))
-      return;
-
+    if (!selectedJadwal || !confirm("Yakin hapus jadwal ini?")) return;
     try {
       await axios.get(
-        `${API}delete_jadwal.php?id_jadwal=${selectedJadwal.id_jadwal}`
+        `${API}delete_apel.php?id_apel=${selectedJadwal.id_apel}`
       );
       closeModal();
       loadJadwal();
     } catch (err) {
-      alert("Gagal menghapus jadwal apel!");
-      console.error(err);
+      alert("Gagal menghapus!");
     }
   };
 
   const addJadwal = async (e) => {
     e.preventDefault();
-    if (!newHari || !newTanggal || !newKelas) {
-      alert("Semua field wajib diisi!");
+    if (!newTanggal || !newKelas) {
+      alert("Lengkapi data!");
       return;
     }
-
     setSubmitting(true);
     try {
       await axios.post(`${API}add_apel.php`, {
-        Hari: newHari.trim(),
         Tanggal: newTanggal,
         Kelas: newKelas.trim(),
       });
-      alert("✅ Jadwal apel berhasil ditambahkan!");
+      alert("✅ Berhasil!");
       setIsAddModalOpen(false);
-      setNewHari("");
       setNewTanggal("");
       setNewKelas("");
       loadJadwal();
     } catch (err) {
-      alert("❌ Gagal menambah jadwal. Cek koneksi atau data Anda.");
-      console.error(err);
+      alert("❌ Gagal menambah jadwal.");
     } finally {
       setSubmitting(false);
     }
   };
 
-  // ✅ Cek apakah user adalah admin dengan aman
-  const isAdmin = user && user.role === "admin";
+  const isAdmin = user?.role === "admin";
+  const isPublic = user?.role === "publik";
 
   return (
-    <div className="relative min-h-screen bg-slate-950 text-white overflow-hidden">
-      {/* Mouse glow effect */}
-      <div
-        className="absolute inset-0 opacity-20 pointer-events-none"
-        style={{
-          background: `radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.2), transparent 60%)`,
-        }}
-      />
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-gray-100 p-4 sm:p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h1 className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-blue-200 to-cyan-200 mb-3">
+            Jadwal Petugas Apel
+          </h1>
 
-      <div className="relative z-10 p-4 sm:p-6 max-w-4xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">Jadwal Apel</h1>
-            <p className="text-gray-400 text-sm mt-1">
-              Kelola jadwal apel harian di sekolah.
-            </p>
-          </div>
+          <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            Pantau jadwal bertugas kelas Anda sebagai petugas apel/upacara
+            bendera.
+            <br className="hidden sm:block" />
+            <span className="text-gray-500">
+              Data diperbarui secara real-time oleh admin sekolah.
+            </span>
+          </p>
 
-          {/* ✅ Aman: hanya tampilkan jika user adalah admin */}
-          {isAdmin && (
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition"
-            >
-              + Tambah Jadwal
-            </button>
+          {isPublic && (
+            <div className="mt-5 inline-flex items-center gap-2 bg-gray-800/50 backdrop-blur-sm border border-gray-700/60 rounded-xl px-4 py-2.5">
+              <span className="text-blue-400 text-lg">👥</span>
+              <div className="text-left">
+                <div className="text-sm font-medium text-white">
+                  Tampilan Siswa
+                </div>
+                <div className="text-xs text-gray-400 mt-0.5">
+                  Hanya bisa melihat jadwal
+                </div>
+              </div>
+            </div>
           )}
         </div>
 
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Cari berdasarkan hari, kelas, atau tanggal..."
-              className="w-full p-3 pl-10 pr-4 rounded-lg bg-slate-900/60 border border-slate-800 text-white placeholder:text-gray-500"
-            />
-            <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        {/* Tombol Admin — warna biru gelap yang cocok */}
+        {isAdmin && (
+          <div className="flex justify-center mb-8 mt-2">
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="px-6 py-2.5 bg-blue-700 hover:bg-blue-600 text-white font-medium rounded-xl transition-all shadow-md hover:shadow-lg flex items-center gap-2"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+              Tambah Jadwal
+            </button>
           </div>
+        )}
+
+        {/* Pencarian */}
+        <div className="mb-8 max-w-md mx-auto">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Cari kelas atau tanggal..."
+            className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
+          />
         </div>
 
-        {/* Loading atau Daftar */}
+        {/* Daftar Jadwal */}
         {loading ? (
-          <div className="text-center py-10 text-gray-400">
-            Memuat jadwal...
-          </div>
+          <div className="text-center py-12 text-gray-400">Memuat...</div>
         ) : filteredJadwal.length === 0 ? (
-          <div className="text-center py-10 text-gray-500">
-            Tidak ada jadwal yang ditemukan.
+          <div className="text-center py-12 text-gray-500 bg-gray-800/30 rounded-xl">
+            Belum ada jadwal apel.
           </div>
         ) : (
-          <div className="space-y-4">
-            {filteredJadwal.map((row) => (
+          <div className="grid gap-5">
+            {filteredJadwal.map((item) => (
               <div
-                key={row.id_jadwal}
-                onClick={() => openModal(row)}
-                className="bg-slate-900/60 border border-slate-800 rounded-xl p-5 cursor-pointer hover:bg-slate-800/70 transition-all hover:shadow-lg"
+                key={item.id_apel}
+                onClick={() => openModal(item)}
+                className={`bg-gray-800/60 backdrop-blur-sm border rounded-xl p-5 cursor-pointer transition-all duration-200 hover:bg-gray-800 ${
+                  isToday(item.Tanggal)
+                    ? "border-blue-500/60 bg-blue-900/10 ring-1 ring-blue-500/20"
+                    : "border-gray-700 hover:border-blue-600/50 hover:shadow-lg hover:shadow-blue-900/20"
+                }`}
               >
-                <div className="flex justify-between items-start">
+                <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-bold text-lg text-white">{row.Hari}</h3>
-                    <p className="text-sm text-gray-400 mt-1">{row.Tanggal}</p>
+                    <div className="text-lg font-bold text-white">
+                      {item.Kelas}
+                    </div>
+                    <div className="text-gray-400 mt-1.5 flex items-center gap-1.5 text-sm">
+                      🎖️ Petugas Apel
+                    </div>
                   </div>
-                  <span className="px-3 py-1 bg-blue-900/50 text-blue-300 rounded-full text-sm font-medium">
-                    {row.Kelas}
-                  </span>
+                  <div className="text-right">
+                    <div className="text-xs text-gray-500">Tanggal</div>
+                    <div
+                      className={`text-lg font-bold mt-1 ${
+                        isToday(item.Tanggal)
+                          ? "text-blue-400"
+                          : "text-blue-400"
+                      }`}
+                    >
+                      {formatDate(item.Tanggal)}
+                    </div>
+                    {isToday(item.Tanggal) && (
+                      <div className="mt-1.5 inline-block bg-blue-500/20 text-blue-400 text-xs px-2 py-0.5 rounded-full border border-red-500/30">
+                        Hari Ini
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -201,40 +226,49 @@ export default function JadwalApel({ user }) {
       {/* Modal Detail */}
       {isModalOpen && selectedJadwal && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
           onClick={closeModal}
         >
           <div
-            className="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-md p-6"
+            className="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-6 backdrop-blur-sm"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-xl font-bold mb-4">Detail Jadwal</h2>
-            <div className="space-y-3 text-gray-300">
-              <div>
-                <span className="font-medium text-white">Hari:</span>{" "}
-                {selectedJadwal.Hari}
+            <h2 className="text-xl font-bold text-center mb-4 text-blue-400">
+              Detail Jadwal
+            </h2>
+            <div className="space-y-4 text-gray-200">
+              <div className="bg-gray-900/40 p-4 rounded-xl text-center">
+                <div className="text-sm text-gray-400">Kelas Bertugas</div>
+                <div className="text-xl font-bold text-white mt-1">
+                  {selectedJadwal.Kelas}
+                </div>
               </div>
-              <div>
-                <span className="font-medium text-white">Tanggal:</span>{" "}
-                {selectedJadwal.Tanggal}
-              </div>
-              <div>
-                <span className="font-medium text-white">Kelas:</span>{" "}
-                <span className="text-blue-300">{selectedJadwal.Kelas}</span>
+              <div className="text-center">
+                <div className="text-sm text-gray-400">Tanggal Lengkap</div>
+                <div className="text-lg font-medium mt-1 text-blue-300">
+                  {new Date(selectedJadwal.Tanggal).toLocaleDateString(
+                    "id-ID",
+                    {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    }
+                  )}
+                </div>
               </div>
             </div>
-            <div className="mt-6 flex justify-end gap-2">
+            <div className="mt-6 flex justify-center gap-3">
               <button
                 onClick={closeModal}
-                className="px-4 py-2 rounded-lg border border-gray-700 hover:bg-gray-800"
+                className="px-4 py-2.5 rounded-lg border border-gray-600 hover:bg-gray-700 text-white font-medium transition"
               >
                 Tutup
               </button>
-              {/* ✅ Aman: hanya tampilkan tombol hapus untuk admin */}
               {isAdmin && (
                 <button
                   onClick={deleteJadwal}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg"
+                  className="px-4 py-2.5 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg transition"
                 >
                   Hapus
                 </button>
@@ -247,50 +281,44 @@ export default function JadwalApel({ user }) {
       {/* Modal Tambah */}
       {isAddModalOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
           onClick={() => setIsAddModalOpen(false)}
         >
           <div
-            className="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-md p-6"
+            className="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-md p-6 backdrop-blur-sm"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-xl font-bold mb-4">Tambah Jadwal Apel</h2>
+            <h2 className="text-xl font-bold text-center mb-5 text-blue-400">
+              Tambah Jadwal Apel
+            </h2>
             <form onSubmit={addJadwal} className="space-y-4">
-              <input
-                type="text"
-                placeholder="Hari (e.g., Senin)"
-                value={newHari}
-                onChange={(e) => setNewHari(e.target.value)}
-                className="w-full p-3 bg-slate-800 rounded-lg border border-slate-700 text-white"
-                required
-              />
               <input
                 type="date"
                 value={newTanggal}
                 onChange={(e) => setNewTanggal(e.target.value)}
-                className="w-full p-3 bg-slate-800 rounded-lg border border-slate-700 text-white"
+                className="w-full p-3.5 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-600/40"
                 required
               />
               <input
                 type="text"
-                placeholder="Kelas (e.g., XII RPL 1)"
+                placeholder="Contoh: XII RPL 1"
                 value={newKelas}
                 onChange={(e) => setNewKelas(e.target.value)}
-                className="w-full p-3 bg-slate-800 rounded-lg border border-slate-700 text-white"
+                className="w-full p-3.5 bg-gray-900 border border-gray-700 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/40"
                 required
               />
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-center gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 rounded-lg border border-gray-700 hover:bg-gray-800"
+                  className="px-4 py-2.5 rounded-xl border border-gray-600 hover:bg-gray-700 text-white font-medium"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-70"
+                  className="px-4 py-2.5 bg-blue-800 hover:bg-blue-700 text-white font-medium rounded-xl disabled:opacity-70 transition shadow shadow-blue-900/20"
                 >
                   {submitting ? "Menyimpan..." : "Simpan"}
                 </button>
