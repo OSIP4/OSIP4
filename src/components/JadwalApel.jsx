@@ -121,14 +121,13 @@ export default function JadwalApel({ user }) {
   const isPublic = user?.role === "publik";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-gray-100 p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 text-gray-100 p-4 sm:p-6 pt-20 md:pt-24">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-blue-200 to-cyan-200 mb-3">
             Jadwal Petugas Apel
           </h1>
-
           <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed">
             Pantau jadwal bertugas kelas Anda sebagai petugas apel/upacara
             bendera.
