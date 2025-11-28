@@ -14,7 +14,7 @@ export default function JadwalApel({ user }) {
   const [newKelas, setNewKelas] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const API = "http://kompetisi.pplgsmkn4.my.id/Kompetisi/api/";
+  const API = "https://kompetisi.pplgsmkn4.my.id/Kompetisi/api/";
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("id-ID", {

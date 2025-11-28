@@ -16,7 +16,7 @@ export default function BeritaPage({ user }) {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  const API_BASE = "http://kompetisi.pplgsmkn4.my.id/Kompetisi/api";
+  const API_BASE = "https://kompetisi.pplgsmkn4.my.id/Kompetisi/api";
 
   const loadBerita = async () => {
     try {
