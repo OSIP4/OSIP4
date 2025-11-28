@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function JadwalApel({ user }) {
   const [jadwal, setJadwal] = useState([]);
@@ -60,8 +61,7 @@ export default function JadwalApel({ user }) {
     return jadwal.filter(
       (item) =>
         item.Kelas.toLowerCase().includes(term) ||
-        formatDate(item.Tanggal).toLowerCase().includes(term) ||
-        item.Tanggal.includes(term)
+        formatDate(item.Tanggal).toLowerCase().includes(term)
     );
   }, [jadwal, searchTerm]);
 
@@ -75,38 +75,43 @@ export default function JadwalApel({ user }) {
     setSelectedJadwal(null);
   };
 
-  const deleteJadwal = async () => {
-    if (!selectedJadwal || !confirm("Yakin hapus jadwal ini?")) return;
+  // Hapus jadwal (setelah konfirmasi toast)
+  const deleteJadwalConfirmed = async () => {
+    if (!selectedJadwal) return;
     try {
       await axios.get(
         `${API}delete_apel.php?id_apel=${selectedJadwal.id_apel}`
       );
+      toast.success("Jadwal berhasil dihapus.");
       closeModal();
       loadJadwal();
     } catch (err) {
-      alert("Gagal menghapus!");
+      console.error("Error hapus:", err);
+      toast.error("Gagal menghapus jadwal.");
     }
   };
 
   const addJadwal = async (e) => {
     e.preventDefault();
-    if (!newTanggal || !newKelas) {
-      alert("Lengkapi data!");
+    if (!newTanggal || !newKelas.trim()) {
+      toast.error("Lengkapi data!");
       return;
     }
+
     setSubmitting(true);
     try {
       await axios.post(`${API}add_apel.php`, {
         Tanggal: newTanggal,
         Kelas: newKelas.trim(),
       });
-      alert("✅ Berhasil!");
+      toast.success("✅ Jadwal berhasil ditambahkan!");
       setIsAddModalOpen(false);
       setNewTanggal("");
       setNewKelas("");
       loadJadwal();
     } catch (err) {
-      alert("❌ Gagal menambah jadwal.");
+      console.error("Error tambah:", err);
+      toast.error("❌ Gagal menambah jadwal.");
     } finally {
       setSubmitting(false);
     }
@@ -148,12 +153,12 @@ export default function JadwalApel({ user }) {
           )}
         </div>
 
-        {/* Tombol Admin — warna biru gelap yang cocok */}
+        {/* Tombol Tambah (Admin) */}
         {isAdmin && (
-          <div className="flex justify-center mb-8 mt-2">
+          <div className="flex justify-center mb-8">
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="px-6 py-2.5 bg-blue-700 hover:bg-blue-600 text-white font-medium rounded-xl transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+              className="px-6 py-2.5 bg-blue-700 hover:bg-blue-600 text-white font-medium rounded-xl transition-all shadow-md hover:shadow-lg"
             >
               Tambah Jadwal
             </button>
@@ -201,17 +206,11 @@ export default function JadwalApel({ user }) {
                   </div>
                   <div className="text-right">
                     <div className="text-xs text-gray-500">Tanggal</div>
-                    <div
-                      className={`text-lg font-bold mt-1 ${
-                        isToday(item.Tanggal)
-                          ? "text-blue-400"
-                          : "text-blue-400"
-                      }`}
-                    >
+                    <div className="text-lg font-bold mt-1 text-blue-400">
                       {formatDate(item.Tanggal)}
                     </div>
                     {isToday(item.Tanggal) && (
-                      <div className="mt-1.5 inline-block bg-blue-500/20 text-blue-400 text-xs px-2 py-0.5 rounded-full border border-red-500/30">
+                      <div className="mt-1.5 inline-block bg-blue-500/20 text-blue-400 text-xs px-2 py-0.5 rounded-full">
                         Hari Ini
                       </div>
                     )}
@@ -267,7 +266,7 @@ export default function JadwalApel({ user }) {
               </button>
               {isAdmin && (
                 <button
-                  onClick={deleteJadwal}
+                  onClick={deleteJadwalConfirmed}
                   className="px-4 py-2.5 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg transition"
                 >
                   Hapus
@@ -318,7 +317,7 @@ export default function JadwalApel({ user }) {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2.5 bg-blue-800 hover:bg-blue-700 text-white font-medium rounded-xl disabled:opacity-70 transition shadow shadow-blue-900/20"
+                  className="px-4 py-2.5 bg-blue-800 hover:bg-blue-700 text-white font-medium rounded-xl disabled:opacity-70 transition"
                 >
                   {submitting ? "Menyimpan..." : "Simpan"}
                 </button>
