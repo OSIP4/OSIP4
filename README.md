@@ -73,6 +73,3 @@ Penyalinan atau penggunaan di luar konteks sekolah harus mendapat izin resmi.
 
 Dikembangkan dengan semangat oleh **Tim OSIP4**  
 **SMKN 4 Padalarang — Wujudkan Potensi, Wujudkan Perubahan.**
-```
-
-Anda cukup menyalin seluruh teks di atas dan menyimpannya sebagai file `README.md` di akar repositori GitHub Anda. Jangan lupa mengganti `your-username` pada URL clone dengan nama pengguna GitHub yang sesuai jika Anda ingin tautan clone berfungsi langsung. Selamat berkarya! 🚀
